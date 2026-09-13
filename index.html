@@ -43,15 +43,9 @@
   .board{
     position:relative;
     padding: calc(var(--dw)*0.55) calc(var(--dw)*0.7);
-    border-radius: calc(var(--dw)*0.32);
-    background:
-      repeating-linear-gradient(180deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 3px),
-      linear-gradient(160deg, var(--case-bg-1), var(--case-bg-2) 70%);
-    box-shadow:
-      0 1px 0 rgba(255,255,255,0.06) inset,
-      0 -2px 10px rgba(0,0,0,0.5) inset,
-      0 18px 40px rgba(0,0,0,0.55);
-    border: 1px solid var(--case-edge);
+    background:transparent;
+    box-shadow:none;
+    border:none;
     display:flex;
     flex-direction:column;
     align-items:center;
@@ -165,11 +159,6 @@
 <body>
 
 <div class="board" id="board">
-  <div class="screw tl"></div>
-  <div class="screw tr"></div>
-  <div class="screw bl"></div>
-  <div class="screw br"></div>
-
   <div class="plate"><span class="dot"></span>orologio</div>
 
   <div class="clock-row" id="clockRow">
