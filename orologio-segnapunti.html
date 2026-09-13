@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orologio Segnapunti</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --case-bg-1:#1f231f;
+    --case-bg-2:#090b08;
+    --case-edge:#050604;
+    --flap-bg-1:#1a201a;
+    --flap-bg-2:#0b0f0a;
+    --hinge:rgba(0,0,0,0.55);
+    --digit-color:#3f7248;
+    --digit-glow:rgba(63,114,72,0.5);
+    --screw:#3a3f37;
+    --screw-hi:#585f52;
+    --label:#748071;
+    --sep:#3f7248;
+
+    --dw: clamp(30px, 8.5vw, 74px);
+    --dh: calc(var(--dw) * 1.42);
+    --gap-digit: calc(var(--dw) * 0.08);
+    --gap-group: calc(var(--dw) * 0.32);
+  }
+
+  *{box-sizing:border-box;}
+
+  html,body{
+    margin:0;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:transparent;
+    font-family:'Oswald',system-ui,sans-serif;
+  }
+
+  .board{
+    position:relative;
+    padding: calc(var(--dw)*0.55) calc(var(--dw)*0.7);
+    border-radius: calc(var(--dw)*0.32);
+    background:
+      repeating-linear-gradient(180deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 3px),
+      linear-gradient(160deg, var(--case-bg-1), var(--case-bg-2) 70%);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.06) inset,
+      0 -2px 10px rgba(0,0,0,0.5) inset,
+      0 18px 40px rgba(0,0,0,0.55);
+    border: 1px solid var(--case-edge);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap: calc(var(--dw)*0.28);
+  }
+
+  .plate{
+    display:flex;
+    align-items:center;
+    gap: calc(var(--dw)*0.12);
+    align-self:flex-start;
+    color:var(--label);
+    font-weight:500;
+    font-size: calc(var(--dw)*0.16);
+    letter-spacing:0.04em;
+  }
+  .plate .dot{
+    width:calc(var(--dw)*0.09);
+    height:calc(var(--dw)*0.09);
+    border-radius:50%;
+    background:var(--sep);
+    box-shadow:0 0 6px var(--digit-glow);
+  }
+
+  .screw{
+    position:absolute;
+    width:calc(var(--dw)*0.14);
+    height:calc(var(--dw)*0.14);
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 35%, var(--screw-hi), var(--screw) 60%, #1a1c1f 100%);
+    box-shadow:0 1px 1px rgba(0,0,0,0.6);
+  }
+  .screw::after{
+    content:"";
+    position:absolute;
+    top:50%; left:15%;
+    width:70%; height:1px;
+    background:rgba(0,0,0,0.5);
+    transform:translateY(-50%) rotate(24deg);
+  }
+  .screw.tl{ top:calc(var(--dw)*0.22); left:calc(var(--dw)*0.22); }
+  .screw.tr{ top:calc(var(--dw)*0.22); right:calc(var(--dw)*0.22); }
+  .screw.bl{ bottom:calc(var(--dw)*0.22); left:calc(var(--dw)*0.22); }
+  .screw.br{ bottom:calc(var(--dw)*0.22); right:calc(var(--dw)*0.22); }
+
+  .clock-row{
+    display:flex;
+    align-items:center;
+    gap: var(--gap-group);
+  }
+
+  .group{
+    display:flex;
+    gap: var(--gap-digit);
+  }
+
+  .sep{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:calc(var(--dh)*0.16);
+    height:var(--dh);
+  }
+  .sep .dot{
+    width:calc(var(--dw)*0.1);
+    height:calc(var(--dw)*0.1);
+    border-radius:50%;
+    background:var(--sep);
+    box-shadow:0 0 8px var(--digit-glow);
+    animation:blink 1s steps(1,end) infinite;
+  }
+  @keyframes blink{
+    0%,49%{opacity:1;}
+    50%,100%{opacity:0.15;}
+  }
+
+  .digit{
+    position:relative;
+    width:var(--dw);
+    height:var(--dh);
+    border-radius: calc(var(--dw)*0.1);
+    background:linear-gradient(180deg, var(--flap-bg-1), var(--flap-bg-2));
+    box-shadow: 0 3px 6px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,0,0,0.4);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+  }
+  .digit::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; top:50%;
+    height:1px;
+    background:var(--hinge);
+  }
+  .digit span{
+    font-weight:700;
+    font-size: calc(var(--dw)*0.82);
+    color:var(--digit-color);
+    text-shadow: 0 0 calc(var(--dw)*0.16) var(--digit-glow);
+  }
+
+  .caption{
+    color:var(--label);
+    font-size: calc(var(--dw)*0.19);
+    font-weight:500;
+    letter-spacing:0.02em;
+  }
+</style>
+</head>
+<body>
+
+<div class="board" id="board">
+  <div class="screw tl"></div>
+  <div class="screw tr"></div>
+  <div class="screw bl"></div>
+  <div class="screw br"></div>
+
+  <div class="plate"><span class="dot"></span>orologio</div>
+
+  <div class="clock-row" id="clockRow">
+    <div class="group" id="grp-h"></div>
+    <div class="sep"><span class="dot"></span><span class="dot"></span></div>
+    <div class="group" id="grp-m"></div>
+    <div class="sep"><span class="dot"></span><span class="dot"></span></div>
+    <div class="group" id="grp-s"></div>
+  </div>
+
+  <div class="caption" id="caption"></div>
+</div>
+
+<script>
+(function(){
+  function makeDigit(container){
+    const wrap = document.createElement('div');
+    wrap.className = 'digit';
+    const span = document.createElement('span');
+    span.textContent = '0';
+    wrap.appendChild(span);
+    container.appendChild(wrap);
+    return span;
+  }
+
+  const grpH = document.getElementById('grp-h');
+  const grpM = document.getElementById('grp-m');
+  const grpS = document.getElementById('grp-s');
+
+  const digits = {
+    h: [makeDigit(grpH), makeDigit(grpH)],
+    m: [makeDigit(grpM), makeDigit(grpM)],
+    s: [makeDigit(grpS), makeDigit(grpS)]
+  };
+
+  const caption = document.getElementById('caption');
+
+  function pad(n){ return String(n).padStart(2,'0'); }
+
+  function render(){
+    const now = new Date();
+    const hh = pad(now.getHours());
+    const mm = pad(now.getMinutes());
+    const ss = pad(now.getSeconds());
+
+    if (digits.h[0].textContent !== hh[0]) digits.h[0].textContent = hh[0];
+    if (digits.h[1].textContent !== hh[1]) digits.h[1].textContent = hh[1];
+    if (digits.m[0].textContent !== mm[0]) digits.m[0].textContent = mm[0];
+    if (digits.m[1].textContent !== mm[1]) digits.m[1].textContent = mm[1];
+    if (digits.s[0].textContent !== ss[0]) digits.s[0].textContent = ss[0];
+    if (digits.s[1].textContent !== ss[1]) digits.s[1].textContent = ss[1];
+
+    const dateStr = now.toLocaleDateString('it-IT', { weekday:'long', day:'numeric', month:'long' });
+    caption.textContent = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+  }
+
+  render();
+
+  function scheduleNextTick(){
+    const now = new Date();
+    const msToNextSecond = 1000 - now.getMilliseconds();
+    setTimeout(function(){
+      render();
+      setInterval(render, 1000);
+    }, msToNextSecond);
+  }
+
+  scheduleNextTick();
+})();
+</script>
+
+</body>
+</html>
